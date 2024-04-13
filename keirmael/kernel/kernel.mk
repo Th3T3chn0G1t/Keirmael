@@ -7,6 +7,10 @@ KERNEL = keirmael$(SEP)kernel$(SEP)
 KVENDOR = $(KERNEL)vendor$(SEP)
 KARCH = $(KERNEL)arch$(SEP)$(ARCH)$(SEP)
 
+# TODO: Document what variables/targets dependent Makefiles are expected to
+#		Export for porting etc.
+include $(KARCH)tools.mk
+
 include $(KARCH)arch.mk
 
 # Define kernel target.

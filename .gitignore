@@ -9,4 +9,6 @@
 
 *.elf
 
+keirmael/kernel/vendor/build
+
 .idea/

@@ -3,6 +3,8 @@
 
 # Included by top level makefile.
 
+CMAKE = cmake
+
 ARCH = x86_64
 
 SET_CFLAGS = -std=gnu23

@@ -5,6 +5,9 @@
 
 KCC = clang
 KLD = ld.lld
+NASM = nasm
+
+include keirmael/kernel/vendor/hyper.mk
 
 KOBJ = .o.$(ARCH)
 KOUT = .elf
