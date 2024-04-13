@@ -1,0 +1,3 @@
+[submodule "keirmael/kernel/vendor/Hyper"]
+	path = keirmael/kernel/vendor/Hyper
+	url = https://github.com/UltraOS/Hyper
