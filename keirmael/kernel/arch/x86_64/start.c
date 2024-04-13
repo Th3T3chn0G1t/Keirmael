@@ -3,7 +3,6 @@
 
 #include <kmlk/kernel.h>
 
-// Arch specific init. calls us here.
-void kmlk_start(void) {
-	while(1) continue;
+void _start(void) {
+	kmlk_start();
 }

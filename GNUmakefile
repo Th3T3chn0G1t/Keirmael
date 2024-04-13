@@ -4,7 +4,12 @@
 # Set up toolchain vars/targets.
 include keirmael/defaults.mk
 include keirmael/host/tools.mk
+# TODO: Document what variables/targets dependent Makefiles are expected to
+#		Export for porting etc.
 include keirmael/kernel/arch/$(ARCH)/tools.mk
 
-# Include actual targets.
+# Include project targets.
 include keirmael/kernel/kernel.mk
+
+.DEFAULT_GOAL := all
+.PHONY: all clean
