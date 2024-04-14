@@ -9,6 +9,7 @@ ifdef OS
 	WINDOWS = 1
 
 	RM = del
+	RMDIR = rmdir /s /q
 	SEP = \\
 else
 	ifeq ($(shell uname -s),Darwin)
@@ -16,6 +17,7 @@ else
 	endif
 
 	RM = rm
+	RMDIR = rm -rf
 	SEP = /
 endif
 

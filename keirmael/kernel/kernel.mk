@@ -29,7 +29,6 @@ $(KERNEL_OUT): $(KERNEL_OBJ)
 # Add bootloader reqs..
 
 $(KERNEL_OUT): KCFLAGS += $(BOOT_KCFLAGS)
-$(KERNEL_OUT): $(BOOT_OUT)
 
 clean: clean_kernel
 .PHONY: clean_kernel

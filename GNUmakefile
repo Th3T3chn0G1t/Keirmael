@@ -7,6 +7,7 @@ include keirmael/host/tools.mk
 
 # Include project targets.
 include keirmael/kernel/kernel.mk
+include keirmael/image.mk
 
 .DEFAULT_GOAL := all
 .PHONY: all clean
