@@ -10,6 +10,11 @@ HYPER_CACHE = $(HYPER)build
 BOOT_KCFLAGS = -isystem $(HYPER)loader$(SEP)boot_protocol$(SEP)ultra_protocol
 BOOT_OUT = $(HYPER_CACHE)$(SEP)loader$(SEP)hyper_iso_boot
 
+BOOT_INSTALL = $(HYPER)installer$(SEP)hyper_install
+ifdef WINDOWS
+BOOT_INSTALL := $(BOOT_INSTALL).exe
+endif
+
 HYPER_MAKEFILE = $(HYPER_CACHE)$(SEP)Makefile
 
 HYPER_CMAKEFLAGS = -DCMAKE_C_COMPILER="$(KCC)" -DCMAKE_LINKER="$(KLD)"
@@ -27,15 +32,15 @@ else
 endif
 
 $(HYPER_CACHE):
-	mkdir $@
+	-mkdir $@
 
 $(HYPER_MAKEFILE): $(HYPER)CMakeLists.txt | $(HYPER_CACHE)
 	$(CMAKE) -B$(HYPER_CACHE) $(dir $<) $(HYPER_CMAKEFLAGS)
 
-$(BOOT_OUT): $(HYPER_MAKEFILE)
-	$(MAKE) -C $(dir $<) VERBOSE=1
+$(BOOT_OUT) $(BOOT_INSTALL): $(HYPER_MAKEFILE)
+	$(MAKE) -C $(dir $<)
 
 clean: clean_hyper
 .PHONY: clean_hyper
 clean_hyper:
-	$(RMDIR) $(HYPER_CACHE)
+	-$(RMDIR) $(HYPER_CACHE)

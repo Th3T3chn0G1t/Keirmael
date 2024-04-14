@@ -20,10 +20,11 @@ KERNEL_KCFLAGS = -I$(KERNEL)include
 KERNEL_SRC = $(ARCH_SRC) $(KERNEL)start.c
 KERNEL_OBJ = $(KERNEL_SRC:.c=$(KOBJ))
 
-KERNEL_OUT = keirmael$(SEP)boot$(SEP)kernel$(KOUT)
+KERNEL_OUT = keirmael$(SEP)boot$(SEP)boot$(SEP)kernel$(KOUT)
 
 all: $(KERNEL_OUT)
 $(KERNEL_OUT): KCFLAGS += $(KERNEL_KCFLAGS)
+$(KERNEL_OUT): KLDFLAGS += -T$(KARCH)kernel.ld
 $(KERNEL_OUT): $(KERNEL_OBJ)
 
 # Add bootloader reqs..
@@ -33,5 +34,5 @@ $(KERNEL_OUT): KCFLAGS += $(BOOT_KCFLAGS)
 clean: clean_kernel
 .PHONY: clean_kernel
 clean_kernel:
-	$(RM) $(KERNEL_OBJ)
-	$(RM) $(KERNEL_OUT)
+	-$(RM) $(KERNEL_OBJ)
+	-$(RM) $(KERNEL_OUT)

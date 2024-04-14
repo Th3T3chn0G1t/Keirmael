@@ -4,7 +4,9 @@
 # Included by top level makefile.
 
 CMAKE = cmake
+XORRISO = xorriso
 
+IMAGE_MODE = iso
 ARCH = x86_64
 
 SET_CFLAGS = -std=gnu23

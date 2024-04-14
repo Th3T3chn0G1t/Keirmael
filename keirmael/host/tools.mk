@@ -11,6 +11,7 @@ ifdef OS
 	RM = del
 	RMDIR = rmdir /s /q
 	SEP = \\
+	CP = copy
 else
 	ifeq ($(shell uname -s),Darwin)
 		APPLE = 1
@@ -19,6 +20,7 @@ else
 	RM = rm
 	RMDIR = rm -rf
 	SEP = /
+	CP = cp
 endif
 
 ifdef WINDOWS

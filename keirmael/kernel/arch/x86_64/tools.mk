@@ -23,4 +23,4 @@ SET_KCFLAGS += -fno-threadsafe-statics
 	$(KCC) -c -o $@ $< $(CFLAGS) $(KCFLAGS)
 
 %$(KOUT):
-	$(KLD) -o $@ $(LDFLAGS) $(filter %$(KOBJ),$^) $(LDLIBS)
+	$(KLD) -o $@ $(LDFLAGS) $(KLDFLAGS) $(filter %$(KOBJ),$^) $(LDLIBS)

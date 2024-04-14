@@ -9,6 +9,11 @@
 
 *.elf
 
+*.bin
+
+*.iso
+*.img
+
 keirmael/kernel/vendor/build
 
 .idea/
