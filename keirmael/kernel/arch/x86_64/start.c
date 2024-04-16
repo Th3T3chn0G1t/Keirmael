@@ -3,14 +3,23 @@
 
 #include <kmlk/kernel.h>
 
-static inline void outb(short port, unsigned char value) {
-	__asm__("outb %[value], %[port]" :: [value]"a"(value), [port]"Nd"(port) :);
+#include <kmlk/arch/x86_64/tables.h>
+#include <kmlk/arch/x86_64/ports.h>
+
+/* This is just here temporarily while we work out full logging infra. */
+static void puts(const char* s) {
+	for(const char* c = s; *c; ++c) kmlk_outb(KMLK_PORT_DEBUG, *c);
 }
 
 void _start(void) {
-	static const char msg[] = "Hello, Keirmael!\n";
+	asm("cli");
 
-	for(const char* c = msg; *c; ++c) outb(0xE9, *c);
+	// Random arch guff (gdt, idt+pic, tss etc.)
+	kmlk_set_arch_tables();
+
+	// Mem. map
+
+	puts("Hello, Keirmael!\n");
 
 	kmlk_start();
 }

@@ -4,4 +4,4 @@
 # Included by kernel makefile.
 
 # TODO: Make this a separate lib target.
-ARCH_SRC = $(KARCH)start.c
+ARCH_SRC = $(KARCH)start.c $(KARCH)tables.c
