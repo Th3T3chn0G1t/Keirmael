@@ -23,4 +23,7 @@ enum kml_result {
 	KML_ERROR
 };
 
+#define KML_CAT_IMPL(a, b) a ## b
+#define KML_CAT(a, b) KML_CAT_IMPL(a, b)
+
 #endif

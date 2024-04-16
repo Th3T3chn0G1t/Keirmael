@@ -8,27 +8,8 @@
 
 #include <kml/common.h>
 
-enum kmlk_priv {
-	KMLK_PRIV0,
-	KMLK_PRIV1,
-	KMLK_PRIV2,
-	KMLK_PRIV3
-};
-
-enum kmlk_table {
-	KMLK_GDT,
-	KMLK_LDT
-};
-
-union [[gnu::packed]] kmlk_selector {
-	struct [[gnu::packed]] {
-		enum kmlk_priv privilege : 2;
-		enum kmlk_table table : 1;
-		kml_u16_t index : 13;
-	};
-
-	kml_u16_t selector;
-};
+#include <kmlk/arch/x86_64/cpu.h>
+#include <kmlk/arch/x86_64/vectors.h>
 
 enum kmlk_gdt_type {
 	KMLK_GDT_SYSTEM,
@@ -153,10 +134,42 @@ struct [[gnu::packed]] kmlk_tss {
 	kml_u16_t iopb_offset;
 };
 
+enum kmlk_gate_type {
+	KMLK_GATE_INTERRUPT = 0xE,
+	KMLK_GATE_TRAP = 0xF
+};
+
+struct [[gnu::packed]] kmlk_idt_entry {
+	kml_u16_t offset_low;
+
+	union kmlk_selector selector;
+
+	kml_u8_t ist : 3;
+	kml_u8_t reserved0 : 5;
+
+	enum kmlk_gate_type gate_type : 4;
+	kml_bool_t reserved1 : 1;
+	enum kmlk_priv privilege : 2;
+	kml_bool_t present : 1;
+
+	kml_u64_t offset_high : 48;
+
+	kml_u32_t reserved2;
+};
+
+struct [[gnu::packed]] kmlk_idt_pointer {
+	kml_u16_t size;
+	struct kmlk_idt_entry* offset;
+};
+
+extern struct kmlk_tss kmlk_tss;
 extern const struct kmlk_gdt_entry kmlk_gdt[KMLK_GDT_INDEX_COUNT];
 extern const union kmlk_selector kmlk_selectors[KMLK_GDT_INDEX_COUNT];
-extern const struct kmlk_gdt_pointer kmlk_gdt_pointer;
+
+extern struct kmlk_idt_entry kmlk_idt[KMLK_VECTOR_COUNT];
 
 void kmlk_set_arch_tables(void);
+
+void kmlk_set_vectors(void);
 
 #endif

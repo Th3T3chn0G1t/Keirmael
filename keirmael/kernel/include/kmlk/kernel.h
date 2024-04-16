@@ -6,4 +6,6 @@
 
 [[noreturn]] void kmlk_start(void);
 
+[[noreturn]] void kmlk_hang(void);
+
 #endif

@@ -4,11 +4,11 @@
 #include <kmlk/kernel.h>
 
 #include <kmlk/arch/x86_64/tables.h>
-#include <kmlk/arch/x86_64/ports.h>
 
-/* This is just here temporarily while we work out full logging infra. */
-static void puts(const char* s) {
-	for(const char* c = s; *c; ++c) kmlk_outb(KMLK_PORT_DEBUG, *c);
+// TODO: Find a better place to put this.
+[[noreturn]] void kmlk_hang(void) {
+	asm("cli");
+	while(1) asm("hlt");
 }
 
 void _start(void) {
@@ -18,8 +18,6 @@ void _start(void) {
 	kmlk_set_arch_tables();
 
 	// Mem. map
-
-	puts("Hello, Keirmael!\n");
 
 	kmlk_start();
 }

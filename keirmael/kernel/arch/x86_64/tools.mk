@@ -14,7 +14,7 @@ KOUT = .elf
 
 SET_KCFLAGS = --target=x86_64-unknown-elf -ffreestanding -static
 SET_KCFLAGS += -fno-pic -mcmodel=kernel -fno-builtin -mno-red-zone
-SET_KCFLAGS += -mno-stack-arg-probe -fno-strict-aliasing
+SET_KCFLAGS += -mno-stack-arg-probe -fno-strict-aliasing -mgeneral-regs-only
 SET_KCFLAGS += -fno-threadsafe-statics
 
 %$(KOBJ): KCFLAGS += $(SET_KCFLAGS)

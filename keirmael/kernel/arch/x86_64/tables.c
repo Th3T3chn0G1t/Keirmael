@@ -93,7 +93,15 @@ const struct kmlk_gdt_pointer kmlk_gdt_pointer = {
 		sizeof(kmlk_gdt) - 1, kmlk_gdt
 };
 
+struct kmlk_idt_entry kmlk_idt[] = { 0 };
+
+const struct kmlk_idt_pointer kmlk_idt_pointer = {
+		sizeof(kmlk_idt) - 1, kmlk_idt
+};
+
 void kmlk_set_arch_tables(void) {
+	kmlk_set_vectors();
+
 	asm(
 		// Load GDT.
 		"lgdtq %[gdt]\n"
@@ -114,10 +122,13 @@ void kmlk_set_arch_tables(void) {
 		// Load TSS.
 		"ltr %[tss]\n"
 
+		// Load IDT.
+		"lidtq %[idt]\n"
+
 		: : [code] "n" (kmlk_selectors[KMLK_GDT_INDEX_CODE]),
 			[data] "n" (kmlk_selectors[KMLK_GDT_INDEX_DATA]),
 			[tss] "m" (kmlk_selectors[KMLK_GDT_INDEX_TSS_BASE]),
-			[gdt] "m" (kmlk_gdt_pointer)
-
+			[gdt] "m" (kmlk_gdt_pointer),
+			[idt] "m" (kmlk_idt_pointer)
 		: "rax", "rbx");
 }
