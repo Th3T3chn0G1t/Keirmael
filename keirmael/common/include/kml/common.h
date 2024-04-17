@@ -15,6 +15,7 @@ typedef int kml_i32_t;
 typedef long kml_i64_t;
 
 typedef kml_u64_t kml_ptr_t;
+typedef kml_u64_t kml_size_t;
 
 typedef enum { KML_FALSE, KML_TRUE } kml_bool_t;
 

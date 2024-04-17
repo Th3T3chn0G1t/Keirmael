@@ -5,11 +5,14 @@
 
 KCC = clang
 KLD = ld.lld
+KAR = llvm-ar
+KRANLIB = llvm-ranlib
 NASM = nasm
 
-include keirmael/kernel/vendor/hyper.mk
+BOOT_MAKE = keirmael$(SEP)kernel$(SEP)vendor$(SEP)hyper.mk
 
 KOBJ = .o.$(ARCH)
+KA = .a.$(ARCH)
 KOUT = .elf
 
 SET_KCFLAGS = --target=x86_64-unknown-elf -ffreestanding -static
@@ -22,5 +25,9 @@ SET_KCFLAGS += -fno-threadsafe-statics
 %$(KOBJ): %.c
 	$(KCC) -c -o $@ $< $(CFLAGS) $(KCFLAGS)
 
+%$(KA):
+	$(KAR) rc $@ $(filter %$(KOBJ),$^)
+	$(KRANLIB) $@
+
 %$(KOUT):
-	$(KLD) -o $@ $(LDFLAGS) $(KLDFLAGS) $(filter %$(KOBJ),$^) $(LDLIBS)
+	$(KLD) -o $@ $(LDFLAGS) $(KLDFLAGS) $(filter %$(KOBJ),$^) $(LDLIBS) $(KLDLIBS)

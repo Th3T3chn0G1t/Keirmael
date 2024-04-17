@@ -5,6 +5,6 @@
 
 #include <kmlk/arch/x86_64/ports.h>
 
-void kml_dputs(const char* s) {
-	for(const char* c = s; *c; ++c) kmlk_outb(KMLK_PORT_DEBUG, *c);
+void kml_dputc(char c) {
+	kmlk_outb(KMLK_PORT_DEBUG, c);
 }

@@ -7,15 +7,13 @@ KERNEL = keirmael$(SEP)kernel$(SEP)
 KVENDOR = $(KERNEL)vendor$(SEP)
 KARCH = $(KERNEL)arch$(SEP)$(ARCH)$(SEP)
 
-# TODO: Document what variables/targets dependent Makefiles are expected to
-#		Export for porting etc.
-include $(KARCH)tools.mk
+include $(BOOT_MAKE)
 
 include $(KARCH)arch.mk
 
 # Define kernel target.
 
-KERNEL_KCFLAGS = -I$(KERNEL)include -Ikeirmael$(SEP)common$(SEP)include
+KERNEL_KCFLAGS = -I$(KERNEL)include -I$(COMMON)include
 
 KERNEL_HDR = $(wildcard keirmael/kernel/include/*.h)
 KERNEL_HDR += $(wildcard keirmael/kernel/include/arch/*.h)
@@ -25,12 +23,14 @@ KERNEL_OBJ = $(KERNEL_SRC:.c=$(KOBJ))
 
 KERNEL_OUT = keirmael$(SEP)boot$(SEP)boot$(SEP)kernel$(KOUT)
 
+$(KERNEL_HDR): $(COMMON_HDR)
+
 $(KERNEL_SRC): $(KERNEL_HDR)
 
-all: $(KERNEL_OUT)
 $(KERNEL_OUT): KCFLAGS += $(KERNEL_KCFLAGS)
 $(KERNEL_OUT): KLDFLAGS += -T$(KARCH)kernel.ld
-$(KERNEL_OUT): $(KERNEL_OBJ)
+$(KERNEL_OUT): KLDLIBS += $(COMMON_OUT)
+$(KERNEL_OUT): $(KERNEL_OBJ) $(COMMON_OUT)
 
 # Add bootloader reqs..
 

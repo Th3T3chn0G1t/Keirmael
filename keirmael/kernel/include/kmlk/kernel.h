@@ -7,5 +7,6 @@
 [[noreturn]] void kmlk_start(void);
 
 [[noreturn]] void kmlk_hang(void);
+[[noreturn]] void kmlk_panic(const char*);
 
 #endif
