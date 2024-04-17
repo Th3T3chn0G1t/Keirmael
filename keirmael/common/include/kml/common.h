@@ -21,10 +21,16 @@ typedef enum { KML_FALSE, KML_TRUE } kml_bool_t;
 
 enum kml_result {
 	KML_OK,
-	KML_ERROR
+	KML_E_UNKNOWN,
+	KML_E_OOM,
+	KML_E_RANGE,
+	KML_E_TYPE,
+	KML_E_PARAM
 };
 
-#define KML_CAT_IMPL(a, b) a ## b
-#define KML_CAT(a, b) KML_CAT_IMPL(a, b)
+#define KML_ROUNDDOWN(x, fac) ((x) / (fac) * (fac))
+#define KML_ROUNDUP(x, fac) (KML_ROUNDDOWN((x) + (fac) - 1, fac))
+
+void* kml_memset(void*, int, kml_size_t);
 
 #endif

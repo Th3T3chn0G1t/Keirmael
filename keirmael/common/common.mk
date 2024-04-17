@@ -6,7 +6,9 @@
 COMMON = keirmael$(SEP)common$(SEP)
 
 COMMON_HDR = $(wildcard keirmael/common/include/*.h)
-COMMON_SRC = $(COMMON)io.c
+
+COMMON_SRC = $(COMMON)io.c $(COMMON)common.c $(COMMON)bit.c
+
 COMMON_OBJ = $(COMMON_SRC:.c=$(KOBJ))
 
 COMMON_OUT = $(COMMON)libcommon$(KA)
