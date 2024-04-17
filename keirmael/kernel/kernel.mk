@@ -13,12 +13,14 @@ include $(KARCH)arch.mk
 
 # Define kernel target.
 
-KERNEL_KCFLAGS = -I$(KERNEL)include -I$(COMMON)include
+KERNEL_KCFLAGS = $(ARCH_KCFLAGS) -I$(KERNEL)include -I$(COMMON)include
 
 KERNEL_HDR = $(wildcard keirmael/kernel/include/*.h)
 KERNEL_HDR += $(wildcard keirmael/kernel/include/arch/*.h)
 KERNEL_HDR += $(wildcard keirmael/kernel/include/arch/$(ARCH)/*.h)
-KERNEL_SRC = $(ARCH_SRC) $(KERNEL)start.c
+
+KERNEL_SRC = $(ARCH_SRC) $(KERNEL)start.c $(KERNEL)memory.c
+
 KERNEL_OBJ = $(KERNEL_SRC:.c=$(KOBJ))
 
 KERNEL_OUT = keirmael$(SEP)boot$(SEP)boot$(SEP)kernel$(KOUT)
