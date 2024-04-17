@@ -19,3 +19,19 @@ void kml_dputx(kml_u64_t v) {
 
 	kml_dputs(buf);
 }
+
+void kml_presult(const char* proc, enum kml_result result) {
+	static const char* resnames[] = {
+		[KML_OK] = "no error",
+		[KML_E_UNKNOWN] = "unknown error",
+		[KML_E_OOM] = "out of memory",
+		[KML_E_RANGE] = "out of range",
+		[KML_E_TYPE] = "wrong type",
+		[KML_E_PARAM] = "bad parameter"
+	};
+
+	kml_dputs(proc);
+	kml_dputs(": ");
+	kml_dputs(resnames[result]);
+	kml_dputc('\n');
+}

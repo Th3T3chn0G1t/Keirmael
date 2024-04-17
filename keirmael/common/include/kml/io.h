@@ -13,4 +13,6 @@ void kml_dputc(char);
 void kml_dputs(const char*);
 void kml_dputx(kml_u64_t);
 
+void kml_presult(const char*, enum kml_result);
+
 #endif
