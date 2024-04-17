@@ -93,4 +93,70 @@ struct kmlk_registers {
 	};
 };
 
+union [[gnu::packed]] kmlk_cr0 {
+	struct [[gnu::packed]] {
+		kml_bool_t protected_mode : 1;
+		kml_bool_t await_coprocessor : 1;
+		kml_bool_t emulate_coprocessor : 1;
+		kml_bool_t task_switched : 1;
+		kml_bool_t reserved0 : 1;
+		kml_bool_t coprocessor_exceptions : 1;
+		kml_u16_t reserved1 : 10;
+		kml_bool_t write_protect : 1;
+		kml_bool_t reserved2 : 1;
+		kml_bool_t alignment_check : 1;
+		kml_u16_t reserved3 : 10;
+		kml_bool_t reserved4 : 1;
+		kml_bool_t cache_disable : 1;
+		kml_bool_t paging_enable : 1;
+		kml_u32_t reserved5;
+	};
+
+	kmlk_register_t cr0;
+};
+
+union [[gnu::packed]] kmlk_cr3 {
+	struct [[gnu::packed]] {
+		kml_u8_t reserved0 : 3;
+		kml_bool_t table_writethrough : 1;
+		kml_bool_t table_cacheable : 1;
+		kml_u8_t reserved1 : 7;
+
+		kml_u64_t table_address : 40;
+		kml_u16_t reserved2 : 12;
+	};
+
+	kmlk_register_t cr3;
+};
+
+union [[gnu::packed]] kmlk_cr4 {
+	struct [[gnu::packed]] {
+		kml_bool_t v8086_virtual_interrupts : 1;
+		kml_bool_t protected_mode_virtual_interrupts : 1;
+		kml_bool_t privileged_rdts : 1;
+		kml_bool_t debug_extensions : 1;
+		kml_bool_t page_size_extension : 1;
+		kml_bool_t physical_address_extension : 1;
+		kml_bool_t machine_check : 1;
+		kml_bool_t page_global : 1;
+		kml_bool_t performance_monitoring : 1;
+		kml_bool_t legacy_sse : 1;
+		kml_bool_t simd_fault : 1;
+		kml_bool_t restrict_privileged_instructions : 1;
+		kml_bool_t level_5_paging : 1;
+		kml_u8_t reserved0 : 3;
+		kml_bool_t privileged_hidden_segments : 1;
+		kml_bool_t pcid : 1;
+		kml_bool_t xsave : 1;
+		kml_bool_t reserved1 : 1;
+		kml_bool_t restrict_privileged_execution : 1;
+		kml_bool_t restrict_privileged_access : 1;
+		kml_bool_t protection_keys : 1;
+		kml_bool_t control_flow_enforcement : 1;
+		kml_u64_t reserved2 : 40;
+	};
+
+	kmlk_register_t cr4;
+};
+
 #endif
