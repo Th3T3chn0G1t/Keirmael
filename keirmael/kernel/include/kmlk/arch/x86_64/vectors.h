@@ -143,7 +143,6 @@ struct kmlk_interrupt_frame {
 // Please never modify this.
 extern struct kmlk_interrupt_frame kmlk_exception_frame;
 
-[[noreturn]] [[gnu::no_caller_saved_registers]]
-void kmlk_interrupt_stub(void);
+[[gnu::no_caller_saved_registers]] void kmlk_interrupt_stub(void);
 
 #endif

@@ -7,14 +7,19 @@
 #include <kmlk/arch/x86_64/tables.h>
 
 // NOTE: These cursed macros make it easier to write our mess after all this.
+
 #define _Irq(n) \
 	[[gnu::naked]] void kmlk_irq##n(void) { \
 		_Base("movl $0, %[error_code]\n", KMLK_IRQ0 + n); \
 	}
 
-#define _Exc(vector) \
+#define _Exc_EC(vector) \
 	[[gnu::naked]] void kmlk_exc##vector(void) { \
 		_Base("popq %[error_code]\n", vector); \
+	}
+#define _Exc(vector) \
+	[[gnu::naked]] void kmlk_exc##vector(void) { \
+		_Base("movl $0, %[error_code]\n", vector); \
 	}
 
 #define _Base(ec, vec) \
@@ -83,7 +88,7 @@
 
 #define _Vecset_impl(i, id, ist, type, priv) \
     do { \
-        kmlk_idt[KMLK_IRQ0 + i] = (struct kmlk_idt_entry) { \
+        kmlk_idt[i] = (struct kmlk_idt_entry) { \
             ((kml_ptr_t) id) & 0xFFFF, \
             kmlk_selectors[KMLK_GDT_INDEX_CODE], \
             (ist), \
@@ -98,7 +103,8 @@
     } while(0)
 
 #define _Irqset(i) \
-	_Vecset_impl(i, kmlk_irq##i, KMLK_IST_NONE, KMLK_GATE_INTERRUPT, KMLK_PRIV0)
+	_Vecset_impl(KMLK_IRQ0 + i, kmlk_irq##i, KMLK_IST_NONE, \
+					KMLK_GATE_INTERRUPT, KMLK_PRIV0)
 
 #define _Excset(vec) \
 	_Vecset_impl(vec, kmlk_exc##vec, KMLK_IST_NONE, KMLK_GATE_TRAP, KMLK_PRIV0)
@@ -111,22 +117,22 @@ _Exc(KMLK_EXC_OVERFLOW)
 _Exc(KMLK_EXC_BOUND_RANGE_EXCEEDED)
 _Exc(KMLK_EXC_INVALID_OPCODE)
 _Exc(KMLK_EXC_DEVICE_NOT_AVAILABLE)
-_Exc(KMLK_EXC_DOUBLE_FAULT)
+_Exc_EC(KMLK_EXC_DOUBLE_FAULT)
 _Exc(KMLK_EXC_COPROCESSOR_SEGMENT_OVERRUN)
-_Exc(KMLK_EXC_INVALID_TSS)
-_Exc(KMLK_EXC_SEGMENT_NOT_PRESENT)
-_Exc(KMLK_EXC_STACK_SEGMENT_FAULT)
-_Exc(KMLK_EXC_GENERAL_PROTECTION_FAULT)
-_Exc(KMLK_EXC_PAGE_FAULT)
+_Exc_EC(KMLK_EXC_INVALID_TSS)
+_Exc_EC(KMLK_EXC_SEGMENT_NOT_PRESENT)
+_Exc_EC(KMLK_EXC_STACK_SEGMENT_FAULT)
+_Exc_EC(KMLK_EXC_GENERAL_PROTECTION_FAULT)
+_Exc_EC(KMLK_EXC_PAGE_FAULT)
 _Exc(KMLK_EXC_X87_FLOATING_POINT)
-_Exc(KMLK_EXC_ALIGNMENT_CHECK)
+_Exc_EC(KMLK_EXC_ALIGNMENT_CHECK)
 _Exc(KMLK_EXC_MACHINE_CHECK)
 _Exc(KMLK_EXC_SIMD_FLOATING_POINT)
 _Exc(KMLK_EXC_VIRTUALIZATION)
 _Exc(KMLK_EXC_CONTROL_PROTECTION)
 _Exc(KMLK_EXC_HYPERVISOR_INJECTION)
-_Exc(KMLK_EXC_VMM_COMMUNICATION)
-_Exc(KMLK_EXC_SECURITY)
+_Exc_EC(KMLK_EXC_VMM_COMMUNICATION)
+_Exc_EC(KMLK_EXC_SECURITY)
 
 // 223 IRQs.
 _Irq(0) _Irq(1) _Irq(2) _Irq(3) _Irq(4) _Irq(5) _Irq(6) _Irq(7) _Irq(8) _Irq(9)

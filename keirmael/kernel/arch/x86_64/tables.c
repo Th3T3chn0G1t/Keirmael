@@ -125,8 +125,8 @@ void kmlk_set_arch_tables(void) {
 		// Load IDT.
 		"lidtq %[idt]\n"
 
-		: : [code] "n" (kmlk_selectors[KMLK_GDT_INDEX_CODE]),
-			[data] "n" (kmlk_selectors[KMLK_GDT_INDEX_DATA]),
+		: : [code] "g" (kmlk_selectors[KMLK_GDT_INDEX_CODE].selector),
+			[data] "g" (kmlk_selectors[KMLK_GDT_INDEX_DATA].selector),
 			[tss] "m" (kmlk_selectors[KMLK_GDT_INDEX_TSS_BASE]),
 			[gdt] "m" (kmlk_gdt_pointer),
 			[idt] "m" (kmlk_idt_pointer)

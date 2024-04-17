@@ -17,6 +17,8 @@ void _start(void) {
 	// Random arch guff (gdt, idt+pic, tss etc.)
 	kmlk_set_arch_tables();
 
+	asm("int3");
+
 	// Mem. map
 
 	kmlk_start();
