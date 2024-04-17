@@ -3,7 +3,9 @@
 
 #include <kml/io.h>
 
+#include <kmlk/arch/x86_64/ports.h>
 #include <kmlk/arch/x86_64/vectors.h>
+#include <kmlk/arch/x86_64/interrupt.h>
 
 struct kmlk_interrupt_frame kmlk_exception_frame;
 
@@ -11,4 +13,14 @@ struct kmlk_interrupt_frame kmlk_exception_frame;
 	kml_dputs("Received interrupt ");
 	kml_dputx(kmlk_exception_frame.vector);
 	kml_dputs("\n");
+}
+
+void kmlk_set_interrupt(void) {
+	// Mask out all interrupts.
+	kmlk_outb(KMLK_PIC1 + 1, 0xFF);
+	kmlk_outb(KMLK_PIC2 + 1, 0xFF);
+
+	// TODO: APIC once we have ACPI.
+
+	asm("sti");
 }

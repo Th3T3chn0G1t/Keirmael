@@ -6,6 +6,9 @@
 
 #include <kml/common.h>
 
+#define KMLK_PIC1 (0x20)
+#define KMLK_PIC2 (0xA0)
+
 #define KMLK_PORT_DEBUG (0xE9)
 
 [[gnu::always_inline]] inline void kmlk_outb(kml_u16_t port, kml_u8_t value) {

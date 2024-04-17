@@ -4,6 +4,7 @@
 #include <kmlk/kernel.h>
 
 #include <kmlk/arch/x86_64/tables.h>
+#include <kmlk/arch/x86_64/interrupt.h>
 
 // TODO: Find a better place to put this.
 [[noreturn]] void kmlk_hang(void) {
@@ -16,6 +17,7 @@ void _start(void) {
 
 	// Random arch guff (gdt, idt+pic, tss etc.)
 	kmlk_set_arch_tables();
+	kmlk_set_interrupt();
 
 	asm("int3");
 
