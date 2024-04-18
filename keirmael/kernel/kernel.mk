@@ -15,9 +15,9 @@ include $(KARCH)arch.mk
 
 KERNEL_KCFLAGS = $(ARCH_KCFLAGS) -I$(KERNEL)include -I$(COMMON)include
 
-KERNEL_HDR = $(wildcard keirmael/kernel/include/*.h)
-KERNEL_HDR += $(wildcard keirmael/kernel/include/arch/*.h)
-KERNEL_HDR += $(wildcard keirmael/kernel/include/arch/$(ARCH)/*.h)
+KERNEL_HDR = $(wildcard keirmael/kernel/include/kmlk/*.h)
+KERNEL_HDR += $(wildcard keirmael/kernel/include/kmlk/arch/*.h)
+KERNEL_HDR += $(wildcard keirmael/kernel/include/kmlk/arch/$(ARCH)/*.h)
 
 KERNEL_SRC = $(ARCH_SRC) $(KERNEL)start.c $(KERNEL)memory.c
 
@@ -25,9 +25,7 @@ KERNEL_OBJ = $(KERNEL_SRC:.c=$(KOBJ))
 
 KERNEL_OUT = keirmael$(SEP)boot$(SEP)boot$(SEP)kernel$(KOUT)
 
-$(KERNEL_HDR): $(COMMON_HDR)
-
-$(KERNEL_SRC): $(KERNEL_HDR)
+$(KERNEL_OBJ): $(COMMON_HDR) $(KERNEL_HDR)
 
 $(KERNEL_OUT): KCFLAGS += $(KERNEL_KCFLAGS)
 $(KERNEL_OUT): KLDFLAGS += -T$(KARCH)kernel.ld

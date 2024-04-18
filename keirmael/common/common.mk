@@ -5,7 +5,7 @@
 
 COMMON = keirmael$(SEP)common$(SEP)
 
-COMMON_HDR = $(wildcard keirmael/common/include/*.h)
+COMMON_HDR = $(wildcard keirmael/common/include/kml/*.h)
 
 COMMON_SRC = $(COMMON)io.c $(COMMON)common.c $(COMMON)bit.c
 
@@ -13,7 +13,7 @@ COMMON_OBJ = $(COMMON_SRC:.c=$(KOBJ))
 
 COMMON_OUT = $(COMMON)libcommon$(KA)
 
-$(COMMON_SRC): $(COMMON_HDR)
+$(COMMON_OBJ): $(COMMON_HDR)
 
 $(COMMON_OUT): KCFLAGS += -I$(COMMON)include
 $(COMMON_OUT): $(COMMON_OBJ)
