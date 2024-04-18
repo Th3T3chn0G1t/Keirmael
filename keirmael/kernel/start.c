@@ -15,7 +15,7 @@
 
 // Arch specific init. calls us here.
 [[noreturn]] void kmlk_start(void) {
-	kml_dputs("Hello, Keirmael!\n");
+	kml_dputs("hello, keirmael!\n");
 
-	kmlk_panic("Reached end of kernel control flow");
+	kmlk_panic("reached end of kernel control flow\n");
 }

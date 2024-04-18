@@ -20,11 +20,15 @@
 void _start(struct ultra_boot_context* context, unsigned int magic) {
 	asm("cli");
 
+	kml_dputs("setting up arch environment...\n");
+
 	// Random arch guff (gdt, idt+pic, tss etc.)
 	kmlk_set_arch_tables();
 	kmlk_set_interrupt();
 
-	asm("int3");
+	kml_dputs("arch tables done\n");
+
+	//asm("int3");
 
 	// Mem. map
 
@@ -78,6 +82,8 @@ void _start(struct ultra_boot_context* context, unsigned int magic) {
 	}
 
 	// TODO: Append reclaimable pages here before handoff.
+
+	kml_dputs("done\n");
 
 	kmlk_start();
 }

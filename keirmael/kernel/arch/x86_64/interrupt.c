@@ -10,7 +10,7 @@
 struct kmlk_interrupt_frame kmlk_exception_frame;
 
 [[gnu::no_caller_saved_registers]] void kmlk_interrupt_stub(void) {
-	kml_dputs("Received interrupt ");
+	kml_dputs("received interrupt ");
 	kml_dputx(kmlk_exception_frame.vector);
 	kml_dputs("\n");
 }
