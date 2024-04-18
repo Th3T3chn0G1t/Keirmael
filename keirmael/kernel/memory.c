@@ -14,7 +14,7 @@ struct [[gnu::packed]] kmlk_palloc_hdr {
 
 struct kmlk_palloc_hdr* kmlk_palloc_list = 0;
 
-void kmlk_palloc_append(struct kmlk_mem_range range) {
+void kmlk_palloc_append(struct kmlk_pmem_range range) {
 	struct kmlk_palloc_hdr* hdr = (void*) range.base;
 
 	hdr->count = range.count;

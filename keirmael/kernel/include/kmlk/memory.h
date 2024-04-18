@@ -13,7 +13,7 @@ typedef kml_ptr_t kmlk_paddr_t;
 
 enum [[clang::flag_enum]] kmlk_mem_prot {
 	KMLK_PROT_NONE = 0,
-	KMLK_PROT_READ = 1,
+	KMLK_PROT_READ = 1, // TODO: Does this need to exist?
 	KMLK_PROT_WRITE = 1 << 1,
 	KMLK_PROT_EXEC = 1 << 2,
 
@@ -24,13 +24,13 @@ enum [[clang::flag_enum]] kmlk_mem_prot {
 	KMLK_P_X = KMLK_PROT_EXEC
 };
 
-struct kmlk_mem_range {
+struct kmlk_pmem_range {
 	kmlk_paddr_t base;
 	kml_size_t count; // Count in pages.
 };
 
 // Add new range to the pmem allocator.
-void kmlk_palloc_append(struct kmlk_mem_range);
+void kmlk_palloc_append(struct kmlk_pmem_range);
 
 void* kmlk_palloc(void);
 void* kmlk_pcalloc(void);
@@ -39,6 +39,9 @@ void kmlk_pfree(void*);
 // First param opaque arch mman handle/top level page ptr for a given mapping
 // Table.
 enum kml_result kmlk_mmap(void**, kmlk_paddr_t, kml_ptr_t, enum kmlk_mem_prot);
+enum kml_result kmlk_mmap_range(
+		void**, struct kmlk_pmem_range, kml_ptr_t, enum kmlk_mem_prot);
+
 void kmlk_mflush(void*);
 
 #endif

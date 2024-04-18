@@ -177,16 +177,18 @@ union [[gnu::packed]] kmlk_pt_entry {
 		kml_bool_t cacheable : 1;
 		kml_bool_t accessed : 1;
 
-		// These are reserved on non-lvl1 entries.
+		// Otherwise AVL.
 		kml_bool_t lvl1_dirty : 1;
+		// 4 rsvd. 3/2 page size.
 		kml_bool_t lvl1_page_attribute_table_high : 1;
+		// Otherwise AVL.
 		kml_bool_t lvl1_global : 1;
 
-		kml_u8_t free0 : 3;
+		kml_u8_t avl0 : 3;
 
 		kmlk_paddr_t address : 40;
 
-		kml_u16_t free1 : 11;
+		kml_u16_t avl1 : 11;
 
 		kml_bool_t no_execute : 1; // TODO: Is the EFER MSR set by Hyper?
 	};

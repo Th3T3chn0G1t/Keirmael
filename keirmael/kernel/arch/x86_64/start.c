@@ -6,6 +6,7 @@
 #include <kmlk/kernel.h>
 #include <kmlk/memory.h>
 
+#include <kmlk/arch/x86_64/start.h>
 #include <kmlk/arch/x86_64/tables.h>
 #include <kmlk/arch/x86_64/interrupt.h>
 
@@ -17,7 +18,7 @@
 	while(1) asm("hlt");
 }
 
-void _start(struct ultra_boot_context* context, unsigned int magic) {
+void _start(struct ultra_boot_context* ctx, unsigned int magic) {
 	asm("cli");
 
 	kml_dputs("setting up arch environment...\n");
@@ -31,55 +32,11 @@ void _start(struct ultra_boot_context* context, unsigned int magic) {
 	//asm("int3");
 
 	// Mem. map
+	void* mmctx = kmlk_set_memory(ctx);
+	if(!mmctx) kmlk_panic("kmlk_set_memory failed");
 
-	struct ultra_attribute_header* attr = context->attributes;
-	for(kml_size_t i = 0; i < context->attribute_count; ++i) {
-		kml_u32_t type = attr->type;
-
-		switch(type) {
-			// case ULTRA_ATTRIBUTE_PLATFORM_INFO:
-			// case ULTRA_ATTRIBUTE_KERNEL_INFO:
-
-			case ULTRA_ATTRIBUTE_MEMORY_MAP: {
-				struct ultra_memory_map_attribute* map = (void*) attr;
-				kml_size_t count = ULTRA_MEMORY_MAP_ENTRY_COUNT(*attr);
-
-				for(kml_size_t j = 0; j < count; ++j) {
-					struct ultra_memory_map_entry* entry = &map->entries[j];
-
-					switch(entry->type) {
-						default: continue;
-
-						case ULTRA_MEMORY_TYPE_FREE: {
-							kmlk_palloc_append((struct kmlk_mem_range) {
-									entry->physical_address,
-									entry->size / KMLK_PAGE
-							});
-							break;
-						}
-						// case ULTRA_MEMORY_TYPE_KERNEL_STACK:
-						// case ULTRA_MEMORY_TYPE_RECLAIMABLE:
-						// case ULTRA_MEMORY_TYPE_LOADER_RECLAIMABLE:
-						// case ULTRA_MEMORY_TYPE_KERNEL_BINARY:
-					}
-				}
-
-				break;
-			}
-
-			// case ULTRA_ATTRIBUTE_MODULE_INFO:
-			// case ULTRA_ATTRIBUTE_COMMAND_LINE:
-			// case ULTRA_ATTRIBUTE_FRAMEBUFFER_INFO:
-
-			default: {
-				kml_dputs("Unknown boot attribute: ");
-				kml_dputx(type);
-				kml_dputc('\n');
-			}
-		}
-
-		attr = ULTRA_NEXT_ATTRIBUTE(attr);
-	}
+	kml_dputs("memory map set, flushing...\n");
+	kmlk_mflush(mmctx);
 
 	// TODO: Append reclaimable pages here before handoff.
 
