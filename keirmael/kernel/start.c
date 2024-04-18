@@ -4,7 +4,6 @@
 #include <kml/io.h>
 
 #include <kmlk/kernel.h>
-#include <kmlk/memory.h>
 
 // TODO: Find a better place to put this.
 // TODO: Add arch-specific dump call.
@@ -15,10 +14,7 @@
 }
 
 // Arch specific init. calls us here.
-void kmlk_start(
-		struct kmlk_mem_range* kernel, kml_ptr_t kernel_vbase,
-		struct kmlk_mem_range* stack) {
-
+[[noreturn]] void kmlk_start(void) {
 	kml_dputs("Hello, Keirmael!\n");
 
 	kmlk_panic("Reached end of kernel control flow");

@@ -6,10 +6,7 @@
 
 #include <kml/common.h>
 
-struct kmlk_mem_range;
-
-[[noreturn]] void kmlk_start(
-		struct kmlk_mem_range*, kml_ptr_t, struct kmlk_mem_range*);
+[[noreturn]] void kmlk_start(void);
 
 [[noreturn]] void kmlk_hang(void);
 [[noreturn]] void kmlk_panic(const char*);

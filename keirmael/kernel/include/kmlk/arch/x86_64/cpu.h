@@ -8,6 +8,7 @@
 
 // Static kernel base as defined in `kernel.ld`
 #define KMLK_BASE ((kml_ptr_t) 0xFFFFFFFF80000000UL)
+#define KMLK_HIGHHALF ((kml_ptr_t) 0xFFFF800000000000UL)
 
 typedef kml_u64_t kmlk_register_t;
 

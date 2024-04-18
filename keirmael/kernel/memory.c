@@ -14,10 +14,10 @@ struct [[gnu::packed]] kmlk_palloc_hdr {
 
 struct kmlk_palloc_hdr* kmlk_palloc_list = 0;
 
-void kmlk_palloc_append(struct kmlk_mem_range* range) {
-	struct kmlk_palloc_hdr* hdr = (void*) range->base;
+void kmlk_palloc_append(struct kmlk_mem_range range) {
+	struct kmlk_palloc_hdr* hdr = (void*) range.base;
 
-	hdr->count = range->count;
+	hdr->count = range.count;
 
 	kml_size_t setcount = KML_ROUNDUP(hdr->count, 8) / 8;
 	kml_size_t hdr_size = setcount + sizeof(struct kmlk_palloc_hdr);
@@ -47,6 +47,10 @@ void* kmlk_palloc(void) {
 	} while((head = head->next));
 
 	return 0;
+}
+
+void* kmlk_pcalloc(void) {
+	return kml_memset(kmlk_palloc(), 0, KMLK_PAGE);
 }
 
 void kmlk_pfree(void* p) {

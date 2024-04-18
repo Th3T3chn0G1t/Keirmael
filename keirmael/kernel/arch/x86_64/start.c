@@ -28,26 +28,13 @@ void _start(struct ultra_boot_context* context, unsigned int magic) {
 
 	// Mem. map
 
-	struct kmlk_mem_range kernel;
-	kml_ptr_t kernel_vbase;
-	struct kmlk_mem_range stack;
-
 	struct ultra_attribute_header* attr = context->attributes;
 	for(kml_size_t i = 0; i < context->attribute_count; ++i) {
 		kml_u32_t type = attr->type;
 
 		switch(type) {
 			// case ULTRA_ATTRIBUTE_PLATFORM_INFO:
-
-			case ULTRA_ATTRIBUTE_KERNEL_INFO: {
-				struct ultra_kernel_info_attribute* kernel_info = (void*) attr;
-
-				kernel.base = kernel_info->physical_base;
-				kernel.count = kernel_info->size / KMLK_PAGE;
-				kernel_vbase = kernel_info->virtual_base;
-
-				break;
-			}
+			// case ULTRA_ATTRIBUTE_KERNEL_INFO:
 
 			case ULTRA_ATTRIBUTE_MEMORY_MAP: {
 				struct ultra_memory_map_attribute* map = (void*) attr;
@@ -60,14 +47,10 @@ void _start(struct ultra_boot_context* context, unsigned int magic) {
 						default: continue;
 
 						case ULTRA_MEMORY_TYPE_FREE: {
-							struct kmlk_mem_range range = {
+							kmlk_palloc_append((struct kmlk_mem_range) {
 									entry->physical_address,
 									entry->size / KMLK_PAGE
-							};
-							kml_dputs("Adding pmalloc range of ");
-							kml_dputx(range.count);
-							kml_dputc('\n');
-							kmlk_palloc_append(&range);
+							});
 							break;
 						}
 						// case ULTRA_MEMORY_TYPE_KERNEL_STACK:
@@ -96,5 +79,5 @@ void _start(struct ultra_boot_context* context, unsigned int magic) {
 
 	// TODO: Append reclaimable pages here before handoff.
 
-	kmlk_start(&kernel, kernel_vbase, &stack);
+	kmlk_start();
 }
