@@ -19,5 +19,10 @@ else
 endif
 
 ifdef MAINTAINER
-	SET_CFLAGS += -pedantic -pedantic-errors -Wall -Wextra -Werror
+	SET_CFLAGS += -pedantic -Wall -Wextra -Werror
+	# For `asm`.
+	SET_CFLAGS += -Wno-language-extension-token
+	# This is incorrectly issued under `-pedantic` in C23 mode.
+	# https://github.com/llvm/llvm-project/issues/89396.
+	SET_CFLAGS += -Wno-gnu-binary-literal
 endif
