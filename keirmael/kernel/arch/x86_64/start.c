@@ -42,5 +42,5 @@ void _start(struct ultra_boot_context* ctx, unsigned int magic) {
 
 	kmlk_done_arch(ctx);
 
-	kmlk_start();
+	kmlk_start(mmctx);
 }

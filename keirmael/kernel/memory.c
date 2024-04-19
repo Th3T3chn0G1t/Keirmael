@@ -53,7 +53,8 @@ void* kmlk_palloc(void) {
 }
 
 void* kmlk_pcalloc(void) {
-	return kml_memset(kmlk_palloc(), 0, KMLK_PAGE);
+	void* p = kmlk_palloc();
+	return p ? kml_memset(p, 0, KMLK_PAGE) : 0;
 }
 
 void kmlk_pfree(void* p) {

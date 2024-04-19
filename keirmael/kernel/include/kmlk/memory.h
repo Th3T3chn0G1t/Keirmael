@@ -18,6 +18,7 @@ enum [[clang::flag_enum]] kmlk_mmflag {
 	KMLK_PROT_EXEC = 1 << 2,
 
 	// Mark entries as global (for kernel mappings).
+	// Should only be set by arch specific code.
 	KMLK_MM_GLOBAL = 1 << 3,
 
 	// Useful smaller identifiers which aren't as descriptive.
@@ -44,6 +45,9 @@ void kmlk_pfree(void*);
 enum kml_result kmlk_mmap(void**, kmlk_paddr_t, kml_ptr_t, enum kmlk_mmflag);
 enum kml_result kmlk_mmap_range(
 		void**, struct kmlk_pmem_range, kml_ptr_t, enum kmlk_mmflag);
+
+// Copy all global (kernel) PT entries to a new mmctx.
+enum kml_result kmlk_mmcopy_global(void**, void*);
 
 void kmlk_mmflush(void*);
 

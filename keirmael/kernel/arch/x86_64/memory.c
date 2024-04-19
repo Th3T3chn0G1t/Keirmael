@@ -209,6 +209,16 @@ enum kml_result kmlk_mmap_range(
 	return KML_OK;
 }
 
+enum kml_result kmlk_mmcopy_global(void** dest, void* src) {
+	if(!(*dest = kmlk_pcalloc())) return KML_E_OOM;
+
+	struct kmlk_pt_entry* dest_table = *dest;
+	kml_size_t n = sizeof(struct kmlk_pt_entry) * (1 << 8);
+	kml_memcpy(dest_table + (1 << 8), src, n);
+
+	return KML_OK;
+}
+
 void kmlk_mmflush(void* mmctx) {
 	union kmlk_cr3 cr3 = { 0 };
 

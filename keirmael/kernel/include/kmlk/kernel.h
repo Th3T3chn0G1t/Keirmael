@@ -6,7 +6,8 @@
 
 #include <kml/common.h>
 
-[[noreturn]] void kmlk_start(void);
+// Pass in mmctx for global (kernel) mappings.
+[[noreturn]] void kmlk_start(void*);
 
 [[noreturn]] void kmlk_hang(void);
 [[noreturn]] void kmlk_panic(const char*);
