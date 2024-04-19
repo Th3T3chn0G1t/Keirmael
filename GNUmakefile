@@ -7,6 +7,7 @@ include keirmael/host/tools.mk
 # TODO: Document what variables/targets dependent Makefiles are expected to
 #		Export for porting etc.
 include keirmael/kernel/arch/$(ARCH)/tools.mk
+include keirmael/user/tools.mk
 
 # Include project targets.
 include keirmael/common/common.mk
