@@ -38,9 +38,9 @@ void _start(struct ultra_boot_context* ctx, unsigned int magic) {
 	kml_dputs("memory map set, flushing...\n");
 	kmlk_mmflush(mmctx);
 
-	// TODO: Append reclaimable pages here before handoff.
+	kml_dputs("done arch boot\n");
 
-	kml_dputs("done\n");
+	kmlk_done_arch(ctx);
 
 	kmlk_start();
 }

@@ -11,11 +11,14 @@
 
 typedef kml_ptr_t kmlk_paddr_t;
 
-enum [[clang::flag_enum]] kmlk_mem_prot {
+enum [[clang::flag_enum]] kmlk_mmflag {
 	KMLK_PROT_NONE = 0,
 	KMLK_PROT_READ = 1,
 	KMLK_PROT_WRITE = 1 << 1,
 	KMLK_PROT_EXEC = 1 << 2,
+
+	// Mark entries as global (for kernel mappings).
+	KMLK_MM_GLOBAL = 1 << 3,
 
 	// Useful smaller identifiers which aren't as descriptive.
 	KMLK_P_0 = KMLK_PROT_NONE,
@@ -38,9 +41,9 @@ void kmlk_pfree(void*);
 
 // First param opaque arch mman handle/top level page ptr for a given mapping
 // Table.
-enum kml_result kmlk_mmap(void**, kmlk_paddr_t, kml_ptr_t, enum kmlk_mem_prot);
+enum kml_result kmlk_mmap(void**, kmlk_paddr_t, kml_ptr_t, enum kmlk_mmflag);
 enum kml_result kmlk_mmap_range(
-		void**, struct kmlk_pmem_range, kml_ptr_t, enum kmlk_mem_prot);
+		void**, struct kmlk_pmem_range, kml_ptr_t, enum kmlk_mmflag);
 
 void kmlk_mmflush(void*);
 
