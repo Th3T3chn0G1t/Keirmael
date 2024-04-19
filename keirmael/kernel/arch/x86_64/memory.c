@@ -32,7 +32,7 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 
 	void* mmctx = 0;
 
-	for(kml_size_t i = 0; i < ctx->attribute_count; ++i) {
+	for(kml_size_t i = 0; (!kinfo && !map) || i < ctx->attribute_count; ++i) {
 		if(attr->type == ULTRA_ATTRIBUTE_KERNEL_INFO) kinfo = (void*) attr;
 		if(attr->type == ULTRA_ATTRIBUTE_MEMORY_MAP) map = (void*) attr;
 
@@ -57,7 +57,7 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 	for(kml_size_t i = 0; i < rcount; ++i) {
 		struct ultra_memory_map_entry* entry = &map->entries[i];
 
-		enum kmlk_mem_prot prot = KMLK_P_R;
+		enum kmlk_mmflag prot = KMLK_MM_GLOBAL | KMLK_P_R;
 
 		if(entry->type == ULTRA_MEMORY_TYPE_FREE ||
 			entry->type == ULTRA_MEMORY_TYPE_RECLAIMABLE ||
@@ -84,7 +84,7 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 			kinfo->size / KMLK_PAGE
 	};
 
-	enum kmlk_mem_prot prot = KMLK_P_R | KMLK_P_X;
+	enum kmlk_mmflag prot = KMLK_MM_GLOBAL | KMLK_P_R | KMLK_P_X;
 	res = kmlk_mmap_range(&mmctx, krange, kinfo->virtual_base, prot);
 	if(res) goto mmdie;
 
@@ -97,6 +97,50 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 	}
 }
 
+static kml_bool_t kmlk_mem_done = KML_FALSE;
+
+// TODO: This has a load of code duplication -- we could hack our way around
+//		 This by just having the map become global in the first call but let's
+//		 Wait until the rest of the boot infrastructure is set up before we
+//		 Start abstracting Hyper.
+void kmlk_done_arch(struct ultra_boot_context* ctx) {
+	// TODO: Need to copy out reclaimable entries -- can't just iterate like
+	//		 This because it will clobber itself when initializing the `palloc`
+	//		 Ranges in `kmlk_palloc_append`.
+
+	(void) ctx;
+
+	/*
+	struct ultra_memory_map_attribute* map = 0;
+
+	struct ultra_attribute_header* attr = ctx->attributes;
+	for(kml_size_t i = 0; i < ctx->attribute_count; ++i) {
+		if(attr->type == ULTRA_ATTRIBUTE_MEMORY_MAP) {
+			map = (void*) attr;
+			break;
+		}
+
+		attr = ULTRA_NEXT_ATTRIBUTE(attr);
+	}
+
+	kml_size_t rcount = ULTRA_MEMORY_MAP_ENTRY_COUNT(map->header);
+
+	for(kml_size_t i = 0; i < rcount; ++i) {
+		struct ultra_memory_map_entry* entry = &map->entries[i];
+
+		if(entry->type != ULTRA_MEMORY_TYPE_RECLAIMABLE ||
+			entry->type != ULTRA_MEMORY_TYPE_LOADER_RECLAIMABLE) {
+
+			continue;
+		}
+
+		kmlk_palloc_append(kmlk_vmrange(entry));
+	}
+	 */
+
+	kmlk_mem_done = KML_TRUE;
+}
+
 // x86_64 `mmctx` is a pointer to the top level page entry.
 
 static kml_size_t kmlk_pidx(kml_ptr_t vaddr, kml_u8_t lvl) {
@@ -105,7 +149,7 @@ static kml_size_t kmlk_pidx(kml_ptr_t vaddr, kml_u8_t lvl) {
 
 enum kml_result kmlk_mmap(
 		void** mmctx, kmlk_paddr_t paddr, kml_ptr_t vaddr,
-		enum kmlk_mem_prot prot) {
+		enum kmlk_mmflag fl) {
 
 	if(vaddr & (KMLK_PAGE - 1)) return KML_E_ALIGN;
 	if(paddr & (KMLK_PAGE - 1)) return KML_E_ALIGN;
@@ -117,6 +161,14 @@ enum kml_result kmlk_mmap(
 
 	for(kml_size_t i = 0; i < 3; ++i) {
 		if(!(ent->present)) {
+			// TODO: Add option to preallocate entire top level to ensure all
+			//		 Future `kmmap` are "safe".
+			// Once arch boot is done it's no longer safe to modify the top
+			// Level table -- as processes may have inherited the old table.
+			if(kmlk_mem_done && i == 0 && (fl & KMLK_MM_GLOBAL)) {
+				return KML_E_LATE;
+			}
+
 			void* p = kmlk_pcalloc();
 			// TODO: This leaks unnecessarily allocated leaves.
 			if(!p) return KML_E_OOM;
@@ -132,15 +184,16 @@ enum kml_result kmlk_mmap(
 
 	ent->address = paddr >> 12;
 	ent->present = KML_TRUE;
-	ent->writeable = !!(prot & KMLK_PROT_WRITE);
-	ent->no_execute = !(prot & KMLK_PROT_EXEC);
+	ent->writeable = !!(fl & KMLK_PROT_WRITE);
+	ent->no_execute = !(fl & KMLK_PROT_EXEC);
+	ent->lvl1_global = !!(fl & KMLK_MM_GLOBAL);
 
 	return KML_OK;
 }
 
 enum kml_result kmlk_mmap_range(
 		void** mmctx, struct kmlk_pmem_range prange, kml_ptr_t vaddr,
-		enum kmlk_mem_prot prot) {
+		enum kmlk_mmflag prot) {
 
 	/*kml_dputf(
 			"mapping $X pages from $X->$X\n",

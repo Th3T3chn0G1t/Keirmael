@@ -9,4 +9,7 @@ struct ultra_boot_context;
 // Set up default `palloc` and mappings.
 void* kmlk_set_memory(struct ultra_boot_context*);
 
+// Reclaims loader/firmware pages and marks arch boot as finished.
+void kmlk_done_arch(struct ultra_boot_context*);
+
 #endif

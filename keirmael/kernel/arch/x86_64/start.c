@@ -40,7 +40,9 @@ void _start(struct ultra_boot_context* ctx, unsigned int magic) {
 
 	// TODO: Append reclaimable pages here before handoff.
 
-	kml_dputs("done\n");
+	kml_dputs("done arch boot\n");
+
+	kmlk_done_arch(ctx);
 
 	kmlk_start();
 }
