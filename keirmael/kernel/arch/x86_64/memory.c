@@ -9,10 +9,17 @@
 
 #include <ultra_protocol.h>
 
-static struct kmlk_pmem_range kmlk_mrange(struct ultra_memory_map_entry* ent) {
+static struct kmlk_pmem_range kmlk_pmrange(struct ultra_memory_map_entry* ent) {
 	return (struct kmlk_pmem_range) {
 		ent->physical_address,
 		ent->size / KMLK_PAGE
+	};
+}
+
+static struct kmlk_pmem_range kmlk_vmrange(struct ultra_memory_map_entry* ent) {
+	return (struct kmlk_pmem_range) {
+			KMLK_HIGHHALF | ent->physical_address,
+			ent->size / KMLK_PAGE
 	};
 }
 
@@ -47,18 +54,18 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 
 		if(entry->type != ULTRA_MEMORY_TYPE_FREE) continue;
 
-		kmlk_palloc_append(kmlk_mrange(entry));
+		kmlk_palloc_append(kmlk_vmrange(entry));
 	}
 
 	for(kml_size_t i = 0; i < rcount; ++i) {
 		struct ultra_memory_map_entry* entry = &map->entries[i];
 
 		kml_ptr_t vaddr = entry->physical_address;
-		res = kmlk_mmap_range(&mmctx, kmlk_mrange(entry), vaddr, prot);
+		res = kmlk_mmap_range(&mmctx, kmlk_pmrange(entry), vaddr, prot);
 		if(res) goto mmdie;
 
 		vaddr = KMLK_HIGHHALF + entry->physical_address;
-		res = kmlk_mmap_range(&mmctx, kmlk_mrange(entry), vaddr, prot);
+		res = kmlk_mmap_range(&mmctx, kmlk_pmrange(entry), vaddr, prot);
 		if(res) goto mmdie;
 	}
 
@@ -103,18 +110,19 @@ enum kml_result kmlk_mmap(
 			// TODO: This leaks unnecessarily allocated leaves.
 			if(!p) return KML_E_OOM;
 
-			ent->address = (kml_ptr_t) p >> 12;
+			ent->address = ((kml_ptr_t) p & ~KMLK_HIGHHALF) >> 12;
 			ent->present = KML_TRUE;
 			ent->writeable = KML_TRUE;
 		}
 
-		kml_ptr_t addr = ent->address << 12;
+		kml_ptr_t addr = KMLK_HIGHHALF | (ent->address << 12);
 		ent = &((struct kmlk_pt_entry*) addr)[kmlk_pidx(vaddr, 2 - i)];
 	}
 
 	ent->address = paddr >> 12;
 	ent->present = KML_TRUE;
-	ent->writeable = KML_TRUE;
+	ent->writeable = !!(prot & KMLK_PROT_WRITE);
+	ent->no_execute = !(prot & KMLK_PROT_EXEC);
 
 	return KML_OK;
 }
@@ -142,7 +150,7 @@ enum kml_result kmlk_mmap_range(
 void kmlk_mmflush(void* mmctx) {
 	union kmlk_cr3 cr3 = { 0 };
 
-	cr3.table_address = (kml_ptr_t) mmctx >> 12;
+	cr3.table_address = ((kml_ptr_t) mmctx & ~KMLK_HIGHHALF) >> 12;
 
 	asm("movq %%rax, %%cr3" :: [value] "a" (cr3.cr3) : );
 }
