@@ -19,6 +19,8 @@
 }
 
 void _start(struct ultra_boot_context* ctx, unsigned int magic) {
+	(void) magic;
+
 	asm("cli");
 
 	kml_dputs("setting up arch environment...\n");
