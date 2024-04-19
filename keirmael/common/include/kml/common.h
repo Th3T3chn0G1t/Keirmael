@@ -34,4 +34,13 @@ enum kml_result {
 
 void* kml_memset(void*, int, kml_size_t);
 
+// TODO: This isn't particularly portable but `__has__builtin` doesn't seem to
+//		 Work correctly.
+#ifdef __GNUC__
+typedef __builtin_va_list kml_va_list_t;
+# define KML_VA_START(ap) __builtin_va_start((ap), 0)
+# define KML_VA_END(ap) __builtin_va_end((ap))
+# define KML_VA_ARG(ap, t) __builtin_va_arg((ap), t)
+#endif
+
 #endif

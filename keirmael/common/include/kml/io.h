@@ -13,6 +13,9 @@ void kml_dputc(char);
 void kml_dputs(const char*);
 void kml_dputx(kml_u64_t);
 
+// Uses `$` for fmt -- very much not `printf` compatible.
+void kml_dputf(const char*, ...);
+
 void kml_presult(const char*, enum kml_result);
 
 #endif

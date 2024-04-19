@@ -20,6 +20,44 @@ void kml_dputx(kml_u64_t v) {
 	kml_dputs(buf);
 }
 
+void kml_dputf(const char* fmt, ...) {
+	kml_va_list_t ap;
+
+	KML_VA_START(ap);
+
+	for(; *fmt; ++fmt) {
+		if(*fmt != '$') {
+			kml_dputc(*fmt);
+			continue;
+		}
+
+		switch(*++fmt) {
+			default: {
+				kml_dputc('$');
+				kml_dputc(*fmt);
+				break;
+			}
+
+			case '$': {
+				kml_dputc('$');
+				break;
+			}
+
+			case 'S': {
+				kml_dputs(KML_VA_ARG(ap, const char*));
+				break;
+			}
+
+			case 'X': {
+				kml_dputx(KML_VA_ARG(ap, kml_u64_t));
+				break;
+			}
+		}
+	}
+
+	KML_VA_END(ap);
+}
+
 void kml_presult(const char* proc, enum kml_result result) {
 	static const char* resnames[] = {
 		[KML_OK] = "no error",
