@@ -164,34 +164,28 @@ struct [[gnu::packed]] kmlk_idt_pointer {
 	struct kmlk_idt_entry* offset;
 };
 
-// Zero indexed.
-typedef kml_u8_t kmlk_pt_lvl_t;
+struct [[gnu::packed]] kmlk_pt_entry {
+	kml_bool_t present : 1;
+	kml_bool_t writeable : 1;
+	kml_bool_t restrict_privileged_access : 1;
+	kml_bool_t writethrough : 1;
+	kml_bool_t cacheable : 1;
+	kml_bool_t accessed : 1;
 
-union [[gnu::packed]] kmlk_pt_entry {
-	kml_u64_t raw;
-	struct [[gnu::packed]] {
-		kml_bool_t present : 1;
-		kml_bool_t writeable : 1;
-		kml_bool_t restrict_privileged_access : 1;
-		kml_bool_t writethrough : 1;
-		kml_bool_t cacheable : 1;
-		kml_bool_t accessed : 1;
+	// Otherwise AVL.
+	kml_bool_t lvl1_dirty : 1;
+	// 4 rsvd. 3/2 page size.
+	kml_bool_t lvl1_page_attribute_table_high : 1;
+	// Otherwise AVL.
+	kml_bool_t lvl1_global : 1;
 
-		// Otherwise AVL.
-		kml_bool_t lvl1_dirty : 1;
-		// 4 rsvd. 3/2 page size.
-		kml_bool_t lvl1_page_attribute_table_high : 1;
-		// Otherwise AVL.
-		kml_bool_t lvl1_global : 1;
+	kml_u8_t avl0 : 3;
 
-		kml_u8_t avl0 : 3;
+	kmlk_paddr_t address : 40;
 
-		kmlk_paddr_t address : 40;
+	kml_u16_t avl1 : 11;
 
-		kml_u16_t avl1 : 11;
-
-		kml_bool_t no_execute : 1; // TODO: Is the EFER MSR set by Hyper?
-	};
+	kml_bool_t no_execute : 1; // TODO: Is the EFER MSR set by Hyper?
 };
 
 extern struct kmlk_tss kmlk_tss;

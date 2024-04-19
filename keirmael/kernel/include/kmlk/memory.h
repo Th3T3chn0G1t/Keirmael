@@ -42,6 +42,6 @@ enum kml_result kmlk_mmap(void**, kmlk_paddr_t, kml_ptr_t, enum kmlk_mem_prot);
 enum kml_result kmlk_mmap_range(
 		void**, struct kmlk_pmem_range, kml_ptr_t, enum kmlk_mem_prot);
 
-void kmlk_mflush(void*);
+void kmlk_mmflush(void*);
 
 #endif

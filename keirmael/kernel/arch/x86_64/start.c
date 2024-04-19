@@ -36,7 +36,7 @@ void _start(struct ultra_boot_context* ctx, unsigned int magic) {
 	if(!mmctx) kmlk_panic("kmlk_set_memory failed");
 
 	kml_dputs("memory map set, flushing...\n");
-	kmlk_mflush(mmctx);
+	kmlk_mmflush(mmctx);
 
 	// TODO: Append reclaimable pages here before handoff.
 

@@ -81,7 +81,7 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 
 // x86_64 `mmctx` is a pointer to the top level page entry.
 
-static kml_size_t kmlk_pidx(kml_ptr_t vaddr, kmlk_pt_lvl_t lvl) {
+static kml_size_t kmlk_pidx(kml_ptr_t vaddr, kml_u8_t lvl) {
 	return (vaddr >> (12 + (9 * lvl))) & 0b111111111;
 }
 
@@ -94,23 +94,27 @@ enum kml_result kmlk_mmap(
 
 	if(!*mmctx && !(*mmctx = kmlk_pcalloc())) return KML_E_OOM;
 
-	kml_u64_t* top = *mmctx;
-	kml_u64_t* ent = &top[kmlk_pidx(vaddr, 3)];
+	struct kmlk_pt_entry* top = *mmctx;
+	struct kmlk_pt_entry* ent = &top[kmlk_pidx(vaddr, 3)];
 
 	for(kml_size_t i = 0; i < 3; ++i) {
-		if(!(*ent & 1)) {
+		if(!(ent->present)) {
 			void* p = kmlk_pcalloc();
 			// TODO: This leaks unnecessarily allocated leaves.
 			if(!p) return KML_E_OOM;
 
-			*ent |= (kml_ptr_t) p | 1 | 2;
+			ent->address = (kml_ptr_t) p >> 12;
+			ent->present = KML_TRUE;
+			ent->writeable = KML_TRUE;
 		}
 
-		kml_ptr_t addr = *ent & 0xFFFFFFFFFF000; // addr
-		ent = &((kml_u64_t*) addr)[kmlk_pidx(vaddr, 2 - i)];
+		kml_ptr_t addr = ent->address << 12;
+		ent = &((struct kmlk_pt_entry*) addr)[kmlk_pidx(vaddr, 2 - i)];
 	}
 
-	*ent |= paddr | 1 | 2;
+	ent->address = paddr >> 12;
+	ent->present = KML_TRUE;
+	ent->writeable = KML_TRUE;
 
 	return KML_OK;
 }
@@ -139,7 +143,7 @@ enum kml_result kmlk_mmap_range(
 	return KML_OK;
 }
 
-void kmlk_mflush(void* mmctx) {
+void kmlk_mmflush(void* mmctx) {
 	union kmlk_cr3 cr3 = { 0 };
 
 	cr3.table_address = (kml_ptr_t) mmctx >> 12;
