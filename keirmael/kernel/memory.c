@@ -65,7 +65,5 @@ void kmlk_pfree(void* p) {
 		}
 	} while((head = head->next));
 
-	kml_dputs("kmlk_pfree: address ");
-	kml_dputx((kml_ptr_t) p);
-	kml_dputs(" out of range\n");
+	kml_dputf("kmlk_pfree: address $X out of range\n", (kml_ptr_t) p);
 }

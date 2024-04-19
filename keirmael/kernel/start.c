@@ -8,8 +8,7 @@
 // TODO: Find a better place to put this.
 // TODO: Add arch-specific dump call.
 [[noreturn]] void kmlk_panic(const char* s) {
-	kml_dputs("PANIC: ");
-	kml_dputs(s);
+	kml_dputf("PANIC: $S\n", s);
 	kmlk_hang();
 }
 
