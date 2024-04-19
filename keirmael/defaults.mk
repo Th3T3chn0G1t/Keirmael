@@ -25,4 +25,5 @@ ifdef MAINTAINER
 	# This is incorrectly issued under `-pedantic` in C23 mode.
 	# https://github.com/llvm/llvm-project/issues/89396.
 	SET_CFLAGS += -Wno-gnu-binary-literal
+	SET_CFLAGS += -Wno-gnu-zero-variadic-macro-arguments
 endif

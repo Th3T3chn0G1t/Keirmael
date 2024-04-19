@@ -6,15 +6,16 @@
 
 #include <kml/common.h>
 
-// Super simple no-error print string for debugging.
-// TODO: We can remove this once we have better logging infrastructure in
-//		 Place.
+// Backend specific no-error "putchar".
 void kml_dputc(char);
-void kml_dputs(const char*);
-void kml_dputx(kml_u64_t);
 
 // Uses `$` for fmt -- very much not `printf` compatible.
 void kml_dputf(const char*, ...);
+
+#define KML_DLOG(fmt, ...) \
+	kml_dputf( \
+		"[$S:$D] " fmt "\n", \
+		__FILE__, __LINE__ __VA_OPT__(,) __VA_ARGS__)
 
 void kml_presult(const char*, enum kml_result);
 

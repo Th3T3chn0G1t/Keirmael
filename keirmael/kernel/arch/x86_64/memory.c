@@ -40,7 +40,7 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 	}
 
 	if(!kinfo || !map) {
-		kml_dputs("invalid boot context\n");
+		KML_DLOG("invalid boot context");
 		return 0;
 	}
 
@@ -195,9 +195,7 @@ enum kml_result kmlk_mmap_range(
 		void** mmctx, struct kmlk_pmem_range prange, kml_ptr_t vaddr,
 		enum kmlk_mmflag prot) {
 
-	/*kml_dputf(
-			"mapping $X pages from $X->$X\n",
-			prange.count, prange.base, vaddr);*/
+	KML_DLOG("mapping $X pages from $X->$X", prange.count, prange.base, vaddr);
 
 	for(kml_size_t i = 0; i < prange.count; ++i) {
 		enum kml_result res;

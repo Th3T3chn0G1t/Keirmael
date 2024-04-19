@@ -8,13 +8,14 @@
 // TODO: Find a better place to put this.
 // TODO: Add arch-specific dump call.
 [[noreturn]] void kmlk_panic(const char* s) {
-	kml_dputf("PANIC: $S\n", s);
+	KML_DLOG("PANIC: $S", s);
 	kmlk_hang();
 }
 
 // Arch specific init. calls us here.
 [[noreturn]] void kmlk_start(void) {
 	kml_dputs("hello, keirmael!\n");
+	KML_DLOG("hello, keirmael!");
 
 	kmlk_panic("reached end of kernel control flow\n");
 }

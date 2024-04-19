@@ -15,6 +15,8 @@ struct [[gnu::packed]] kmlk_palloc_hdr {
 struct kmlk_palloc_hdr* kmlk_palloc_list = 0;
 
 void kmlk_palloc_append(struct kmlk_pmem_range range) {
+	KML_DLOG("palloc added node of $D pages @ $X", range.count, range.base);
+
 	struct kmlk_palloc_hdr* hdr = (void*) range.base;
 
 	hdr->count = range.count;
@@ -41,6 +43,7 @@ void* kmlk_palloc(void) {
 		for(kml_size_t i = 0; i < head->count; ++i) {
 			if(!kml_bitset_get(head->bitset, i)) {
 				kml_bitset_set(head->bitset, i);
+				KML_DLOG("palloc $X:$X", head, i);
 				return ((kml_u8_t*) head) + (i * KMLK_PAGE);
 			}
 		}
@@ -65,5 +68,5 @@ void kmlk_pfree(void* p) {
 		}
 	} while((head = head->next));
 
-	kml_dputf("kmlk_pfree: address $X out of range\n", (kml_ptr_t) p);
+	KML_DLOG("kmlk_pfree: address $X out of range\n", (kml_ptr_t) p);
 }

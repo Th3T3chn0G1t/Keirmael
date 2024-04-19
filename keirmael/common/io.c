@@ -3,21 +3,8 @@
 
 #include <kml/io.h>
 
-void kml_dputs(const char* s) {
+static void kml_dputs(const char* s) {
 	for(const char* c = s; *c; ++c) kml_dputc(*c);
-}
-
-void kml_dputx(kml_u64_t v) {
-	static const char table[] = "0123456789ABCDEF";
-
-	char buf[17] = { 0 };
-
-	for(kml_size_t i = 16; i > 0; --i) {
-		buf[i - 1] = table[v % 16];
-		v /= 16;
-	}
-
-	kml_dputs(buf);
 }
 
 void kml_dputf(const char* fmt, ...) {
@@ -49,8 +36,27 @@ void kml_dputf(const char* fmt, ...) {
 			}
 
 			case 'X': {
-				kml_dputx(KML_VA_ARG(ap, kml_u64_t));
+				kml_u64_t v = KML_VA_ARG(ap, kml_u64_t);
+
+				for(kml_size_t i = 16; i > 0; --i) {
+					kml_u64_t m = (v >> (4 * (i - 1))) & 0xF;
+					kml_dputc("0123456789ABCDEF"[m]);
+				}
+
 				break;
+			}
+
+			case 'D': {
+				kml_u64_t v = KML_VA_ARG(ap, kml_u64_t);
+
+				char buf[20] = { 0 };
+				kml_size_t i = sizeof(buf) - 1;
+				do {
+					buf[i--] = '0' + (v % 10);
+				} while((v /= 10));
+				i++;
+
+				for(; i < sizeof(buf); ++i) kml_dputc(buf[i]);
 			}
 		}
 	}
@@ -70,5 +76,5 @@ void kml_presult(const char* proc, enum kml_result result) {
 			[KML_E_LATE] = "too late"
 	};
 
-	kml_dputf("$S: $S\n", proc, resnames[result]);
+	KML_DLOG("$S: $S", proc, resnames[result]);
 }

@@ -21,13 +21,13 @@ void _start(struct ultra_boot_context* ctx, unsigned int magic) {
 
 	asm("cli");
 
-	kml_dputs("setting up arch environment...\n");
+	KML_DLOG("setting up arch environment...");
 
 	// Random arch guff (gdt, idt+pic, tss etc.)
 	kmlk_set_arch_tables();
 	kmlk_set_interrupt();
 
-	kml_dputs("arch tables done\n");
+	KML_DLOG("arch tables done");
 
 	//asm("int3");
 
@@ -35,10 +35,10 @@ void _start(struct ultra_boot_context* ctx, unsigned int magic) {
 	void* mmctx = kmlk_set_memory(ctx);
 	if(!mmctx) kmlk_panic("kmlk_set_memory failed");
 
-	kml_dputs("memory map set, flushing...\n");
+	KML_DLOG("memory map set, flushing...");
 	kmlk_mmflush(mmctx);
 
-	kml_dputs("done arch boot\n");
+	KML_DLOG("done arch boot");
 
 	kmlk_done_arch(ctx);
 
