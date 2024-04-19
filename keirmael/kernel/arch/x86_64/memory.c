@@ -53,8 +53,12 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 	for(kml_size_t i = 0; i < rcount; ++i) {
 		struct ultra_memory_map_entry* entry = &map->entries[i];
 
-		res = kmlk_mmap_range(
-				&mmctx, kmlk_mrange(entry), entry->physical_address, prot);
+		kml_ptr_t vaddr = entry->physical_address;
+		res = kmlk_mmap_range(&mmctx, kmlk_mrange(entry), vaddr, prot);
+		if(res) goto mmdie;
+
+		vaddr = KMLK_HIGHHALF + entry->physical_address;
+		res = kmlk_mmap_range(&mmctx, kmlk_mrange(entry), vaddr, prot);
 		if(res) goto mmdie;
 	}
 
