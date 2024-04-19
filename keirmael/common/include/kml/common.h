@@ -34,6 +34,7 @@ enum kml_result {
 #define KML_ROUNDUP(x, fac) (KML_ROUNDDOWN((x) + (fac) - 1, fac))
 
 void* kml_memset(void*, int, kml_size_t);
+void* kml_memcpy(void*, const void*, kml_size_t);
 
 // TODO: This isn't particularly portable but `__has__builtin` doesn't seem to
 //		 Work correctly.

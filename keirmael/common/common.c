@@ -8,3 +8,12 @@ void* kml_memset(void* p, int c, kml_size_t n) {
 
 	return p;
 }
+
+void* kml_memcpy(void* dest, const void* src, kml_size_t n) {
+	char* dc = dest;
+	const char* srcc = src;
+
+	for(kml_size_t i = 0; i < n; ++i) dc[i] = srcc[i];
+
+	return dest;
+}
