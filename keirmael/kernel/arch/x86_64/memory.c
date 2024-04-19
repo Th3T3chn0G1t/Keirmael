@@ -24,9 +24,6 @@ static struct kmlk_pmem_range kmlk_vmrange(struct ultra_memory_map_entry* ent) {
 }
 
 void* kmlk_set_memory(struct ultra_boot_context* ctx) {
-	// TODO: These protections should probably change with mapping type.
-	static const enum kmlk_mem_prot prot = KMLK_P_R | KMLK_P_W | KMLK_P_X;
-
 	enum kml_result res;
 
 	struct ultra_attribute_header* attr = ctx->attributes;
@@ -60,6 +57,23 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 	for(kml_size_t i = 0; i < rcount; ++i) {
 		struct ultra_memory_map_entry* entry = &map->entries[i];
 
+		enum kmlk_mem_prot prot = KMLK_P_R;
+
+		if(entry->type == ULTRA_MEMORY_TYPE_FREE ||
+			entry->type == ULTRA_MEMORY_TYPE_RECLAIMABLE ||
+			entry->type == ULTRA_MEMORY_TYPE_LOADER_RECLAIMABLE ||
+			entry->type == ULTRA_MEMORY_TYPE_KERNEL_STACK) {
+
+			prot |= KMLK_P_W;
+		}
+
+		// For some reason we if kernel stack is marked noexec here.
+		if(entry->type == ULTRA_MEMORY_TYPE_KERNEL_STACK ||
+			entry->type == ULTRA_MEMORY_TYPE_KERNEL_BINARY) {
+
+			prot |= KMLK_P_X;
+		}
+
 		kml_ptr_t vaddr = entry->physical_address;
 		res = kmlk_mmap_range(&mmctx, kmlk_pmrange(entry), vaddr, prot);
 		if(res) goto mmdie;
@@ -74,6 +88,7 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 			kinfo->size / KMLK_PAGE
 	};
 
+	enum kmlk_mem_prot prot = KMLK_P_R | KMLK_P_X;
 	res = kmlk_mmap_range(&mmctx, krange, kinfo->virtual_base, prot);
 	if(res) goto mmdie;
 

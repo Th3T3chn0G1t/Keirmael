@@ -10,8 +10,6 @@
 #include <kmlk/arch/x86_64/tables.h>
 #include <kmlk/arch/x86_64/interrupt.h>
 
-#include <ultra_protocol.h>
-
 // TODO: Find a better place to put this.
 [[noreturn]] void kmlk_hang(void) {
 	asm("cli");

@@ -13,7 +13,7 @@ typedef kml_ptr_t kmlk_paddr_t;
 
 enum [[clang::flag_enum]] kmlk_mem_prot {
 	KMLK_PROT_NONE = 0,
-	KMLK_PROT_READ = 1, // TODO: Does this need to exist?
+	KMLK_PROT_READ = 1,
 	KMLK_PROT_WRITE = 1 << 1,
 	KMLK_PROT_EXEC = 1 << 2,
 
