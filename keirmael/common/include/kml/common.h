@@ -26,7 +26,8 @@ enum kml_result {
 	KML_E_RANGE,
 	KML_E_TYPE,
 	KML_E_PARAM,
-	KML_E_ALIGN
+	KML_E_ALIGN,
+	KML_E_LATE
 };
 
 #define KML_ROUNDDOWN(x, fac) ((x) / (fac) * (fac))

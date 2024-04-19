@@ -60,12 +60,14 @@ void kml_dputf(const char* fmt, ...) {
 
 void kml_presult(const char* proc, enum kml_result result) {
 	static const char* resnames[] = {
-		[KML_OK] = "no error",
-		[KML_E_UNKNOWN] = "unknown error",
-		[KML_E_OOM] = "out of memory",
-		[KML_E_RANGE] = "out of range",
-		[KML_E_TYPE] = "wrong type",
-		[KML_E_PARAM] = "bad parameter"
+			[KML_OK] = "no error",
+			[KML_E_UNKNOWN] = "unknown error",
+			[KML_E_OOM] = "out of memory",
+			[KML_E_RANGE] = "out of range",
+			[KML_E_TYPE] = "wrong type",
+			[KML_E_PARAM] = "bad parameter",
+			[KML_E_ALIGN] = "bad alignment",
+			[KML_E_LATE] = "too late"
 	};
 
 	kml_dputs(proc);
