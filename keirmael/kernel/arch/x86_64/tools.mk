@@ -7,13 +7,12 @@ KCC = clang
 KLD = ld.lld
 KAR = llvm-ar
 KRANLIB = llvm-ranlib
-NASM = nasm
 
 BOOT_MAKE = keirmael$(SEP)kernel$(SEP)vendor$(SEP)hyper.mk
 
 KOBJ = .o.$(ARCH)
 KA = .a.$(ARCH)
-KOUT = .elf
+KOUT = .elf.$(ARCH)
 
 SET_KCFLAGS = --target=x86_64-unknown-elf -ffreestanding -static
 SET_KCFLAGS += -fno-pic -mcmodel=kernel -fno-builtin -mno-red-zone

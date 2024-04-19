@@ -2,11 +2,9 @@
 # Copyright (C) 2024 Emily "TTG" Banerjee <prs.ttg+kml@pm.me>
 
 *.o
-*.o.*
 *.obj
 
 *.a
-*.a.*
 *.lib
 
 *.out
@@ -18,6 +16,8 @@
 
 *.iso
 *.img
+
+*.x86_64
 
 keirmael/kernel/vendor/build
 

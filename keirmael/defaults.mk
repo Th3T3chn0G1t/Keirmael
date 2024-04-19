@@ -5,6 +5,7 @@
 
 CMAKE = cmake
 XORRISO = xorriso
+NASM = nasm
 
 IMAGE_MODE = iso
 ARCH = x86_64
