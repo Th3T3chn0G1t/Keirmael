@@ -74,11 +74,7 @@ void* kmlk_set_memory(struct ultra_boot_context* ctx) {
 			prot |= KMLK_P_X;
 		}
 
-		kml_ptr_t vaddr = entry->physical_address;
-		res = kmlk_mmap_range(&mmctx, kmlk_pmrange(entry), vaddr, prot);
-		if(res) goto mmdie;
-
-		vaddr = KMLK_HIGHHALF + entry->physical_address;
+		kml_ptr_t vaddr = KMLK_HIGHHALF + entry->physical_address;
 		res = kmlk_mmap_range(&mmctx, kmlk_pmrange(entry), vaddr, prot);
 		if(res) goto mmdie;
 	}
