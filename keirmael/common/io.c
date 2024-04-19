@@ -70,8 +70,5 @@ void kml_presult(const char* proc, enum kml_result result) {
 			[KML_E_LATE] = "too late"
 	};
 
-	kml_dputs(proc);
-	kml_dputs(": ");
-	kml_dputs(resnames[result]);
-	kml_dputc('\n');
+	kml_dputf("$S: $S\n", proc, resnames[result]);
 }
